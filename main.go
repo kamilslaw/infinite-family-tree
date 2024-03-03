@@ -1,11 +1,13 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/kamilslaw/infinite-family-tree/hello"
+	"context"
+	"github.com/kamilslaw/infinite-family-tree/logger"
 )
 
 func main() {
-	fmt.Println(hello.Hello())
+	log := logger.InitLogger()
+	defer log.Sync()
+
+	log.Info(context.Background(), "Hello world!", logger.Fields{"name": "aaa", "value": 7})
 }
