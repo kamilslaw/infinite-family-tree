@@ -5,9 +5,27 @@ import (
 	"time"
 )
 
+type Gender string
+
+const (
+	Male        Gender = "male"
+	Female      Gender = "female"
+	OtherGender Gender = "other"
+)
+
+type PersonId uuid.UUID
+
 type Person struct {
-	ID     uuid.UUID
-	Names  []string
-	BornOn time.Time
-	DiedOn time.Time
+	ID          PersonId
+	FirstNames  []string
+	SecondNames []string
+	BornOn      time.Time
+	DiedOn      time.Time
+	Gender      Gender // in some cultures gender is required to describe relations
+	Attributes  map[string]string
 }
+
+// ByNameMatcher - comparing names is culture dependent,
+// e.g. when comparing Dutch people we might want to ignore the 'van' prefix;
+// returns [0-1], where 0 means 100% match and 1 means no match at all
+type ByNameMatcher func(l, r *Person) uint
