@@ -8,9 +8,10 @@ import (
 type Gender string
 
 const (
-	Male        Gender = "male"
-	Female      Gender = "female"
-	OtherGender Gender = "other"
+	Male          Gender = "male"
+	Female        Gender = "female"
+	OtherGender   Gender = "other"
+	UnknownGender Gender = "unknown"
 )
 
 type PersonId uuid.UUID
@@ -21,7 +22,7 @@ type Person struct {
 	SecondNames []string
 	BornOn      time.Time
 	DiedOn      time.Time
-	Gender      Gender // in some cultures gender is required to describe relations
+	Gender      Gender
 	Attributes  map[string]string
 }
 
