@@ -40,6 +40,11 @@ func (r *Relationship) Equal(other *Relationship) bool {
 		r.EndedOn.Equal(other.EndedOn)
 }
 
+func (r *Relationship) PeopleEqual(other *Relationship) bool {
+	return (r.Person == other.Person && r.Of == other.Of) ||
+		(r.Person == other.Of && r.Of == other.Person)
+}
+
 func NewRelationship(person PersonId, is RelationshipKind, of PersonId,
 	startedOn time.Time, endedOn time.Time) (*Relationship, error) {
 
@@ -68,9 +73,7 @@ func (r *Relationship) CheckIfAllowed(others []*Relationship) (bool, error) {
 			return false, ErrRelationshipExists
 		}
 
-		if r.Is == Child &&
-			(other.Person == r.Of || other.Of == r.Of) &&
-			(other.Person == r.Person || other.Of == r.Person) {
+		if r.Is == Child && r.PeopleEqual(other) {
 			return false, ErrChildRelationshipCannotCoexist
 		}
 	}
