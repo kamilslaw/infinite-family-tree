@@ -114,6 +114,22 @@ func TestRelationship_PeopleEqual(t *testing.T) {
 	}
 }
 
+func TestRelationship_CheckIfAllowed_RelationshipCannotBeDuplicated(t *testing.T) {
+	relationship := getRelationship()
+
+	res, err := relationship.CheckIfAllowed([]*Relationship{getRelationship()})
+	assert.True(t, res)
+	assert.Nil(t, err)
+
+	res, err = relationship.CheckIfAllowed([]*Relationship{relationship})
+	assert.False(t, res)
+	assert.ErrorIs(t, err, ErrRelationshipExists)
+}
+
+func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelationship(t *testing.T) {
+
+}
+
 func getRelationship() *Relationship {
 	person := PersonId(uuid.New())
 	is := Child
