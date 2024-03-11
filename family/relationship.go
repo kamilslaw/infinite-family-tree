@@ -67,17 +67,18 @@ func NewRelationship(person PersonId, is RelationshipKind, of PersonId,
 	return &Relationship{Person: person, Is: is, Of: of, StartedOn: startedOn}, nil
 }
 
-func (r *Relationship) CheckIfAllowed(others []*Relationship) (bool, error) {
+func (r *Relationship) CheckIfAllowed(others []*Relationship) error {
 	for _, other := range others {
 		if other.Equal(r) {
-			return false, ErrRelationshipExists
+			return ErrRelationshipExists
 		}
 
-		if r.Is == Child && r.PeopleEqual(other) {
-			return false, ErrChildRelationshipCannotCoexist
+		anyChildRelationship := r.Is == Child || other.Is == Child
+		if anyChildRelationship && r.PeopleEqual(other) {
+			return ErrChildRelationshipCannotCoexist
 		}
 	}
 
 	// todo: implement - check if exists in the family tree already
-	return true, nil
+	return nil
 }

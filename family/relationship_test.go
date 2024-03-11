@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+var personId1 = uuid.New()
+var personId2 = uuid.New()
+
 //func TestNewRelationship(t *testing.T) {
 //	personId := PersonId(uuid.New())
 //	is := Partner
@@ -22,12 +25,6 @@ import (
 //}
 
 func TestRelationship_Equal(t *testing.T) {
-	personId1 := PersonId(uuid.New())
-	personId2 := PersonId(uuid.New())
-	get := func() *Relationship {
-		return withKind(withOf(withPerson(getRelationship(), personId1), personId2), Spouse)
-	}
-
 	tests := []struct {
 		name   string
 		r      *Relationship
@@ -36,26 +33,26 @@ func TestRelationship_Equal(t *testing.T) {
 	}{
 		{
 			name:   "different relationship",
-			r:      get(),
-			other:  getRelationship(),
+			r:      getRelationship(),
+			other:  getRandomRelationship(),
 			result: false,
 		},
 		{
 			name:   "different kind",
-			r:      get(),
-			other:  withKind(get(), Partner),
+			r:      getRelationship(),
+			other:  withKind(getRelationship(), Partner),
 			result: false,
 		},
 		{
 			name:   "different start time",
-			r:      get(),
-			other:  withStartedOn(get(), time.Now()),
+			r:      getRelationship(),
+			other:  withStartedOn(getRelationship(), time.Now()),
 			result: false,
 		},
 		{
 			name:   "same",
-			r:      get(),
-			other:  get(),
+			r:      getRelationship(),
+			other:  getRelationship(),
 			result: true,
 		},
 	}
@@ -78,26 +75,26 @@ func TestRelationship_PeopleEqual(t *testing.T) {
 	}{
 		{
 			name:   "no common person",
-			r:      getRelationship(),
-			other:  getRelationship(),
+			r:      getRandomRelationship(),
+			other:  getRandomRelationship(),
 			result: false,
 		},
 		{
 			name:   "one common person",
-			r:      withPerson(getRelationship(), personId1),
-			other:  withPerson(getRelationship(), personId1),
+			r:      withPerson(getRandomRelationship(), personId1),
+			other:  withPerson(getRandomRelationship(), personId1),
 			result: false,
 		},
 		{
 			name:   "one common person on a different side of relationship",
-			r:      withPerson(getRelationship(), personId1),
-			other:  withOf(getRelationship(), personId1),
+			r:      withPerson(getRandomRelationship(), personId1),
+			other:  withOf(getRandomRelationship(), personId1),
 			result: false,
 		},
 		{
 			name:   "two common persons",
-			r:      withOf(withPerson(getRelationship(), personId1), personId2),
-			other:  withOf(withPerson(getRelationship(), personId1), personId2),
+			r:      withOf(withPerson(getRandomRelationship(), personId1), personId2),
+			other:  withOf(withPerson(getRandomRelationship(), personId1), personId2),
 			result: true,
 		},
 		{
@@ -115,26 +112,30 @@ func TestRelationship_PeopleEqual(t *testing.T) {
 }
 
 func TestRelationship_CheckIfAllowed_RelationshipCannotBeDuplicated(t *testing.T) {
-	relationship := getRelationship()
-
-	res, err := relationship.CheckIfAllowed([]*Relationship{getRelationship()})
-	assert.True(t, res)
+	err := getRelationship().CheckIfAllowed([]*Relationship{withKind(getRelationship(), Partner)})
 	assert.Nil(t, err)
 
-	res, err = relationship.CheckIfAllowed([]*Relationship{relationship})
-	assert.False(t, res)
+	err = getRelationship().CheckIfAllowed([]*Relationship{getRelationship()})
 	assert.ErrorIs(t, err, ErrRelationshipExists)
 }
 
 func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelationship(t *testing.T) {
-
+	err := getRelationship().CheckIfAllowed([]*Relationship{withKind(getRelationship(), Child)})
+	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
 }
 
 func getRelationship() *Relationship {
+	personId1Copy := make([]byte, len(personId1))
+	copy(personId1Copy, personId1[:])
+	personId2Copy := make([]byte, len(personId2))
+	copy(personId2Copy, personId2[:])
+	return withOf(withPerson(getRandomRelationship(), PersonId(personId1Copy)), PersonId(personId2Copy))
+}
+
+func getRandomRelationship() *Relationship {
 	person := PersonId(uuid.New())
-	is := Child
 	of := PersonId(uuid.New())
-	if r, e := NewRelationship(person, is, of, time.Time{}, time.Time{}); e != nil {
+	if r, e := NewRelationship(person, Friend, of, time.Time{}, time.Time{}); e != nil {
 		panic(e)
 	} else {
 		return r
