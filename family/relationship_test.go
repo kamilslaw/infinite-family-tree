@@ -120,7 +120,17 @@ func TestRelationship_CheckIfAllowed_RelationshipCannotBeDuplicated(t *testing.T
 }
 
 func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelationship(t *testing.T) {
-	err := getRelationship().CheckIfAllowed([]*Relationship{withKind(getRelationship(), Child)})
+	relation := getRelationship()
+	relationWithSamePeopleButChild := withKind(getRelationship(), Child)
+
+	err := relationWithSamePeopleButChild.CheckIfAllowed([]*Relationship{relation})
+	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
+
+	err = relation.CheckIfAllowed([]*Relationship{relationWithSamePeopleButChild})
+	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
+
+	relationWithSamePeopleButChildReverted := withOf(withPerson(relationWithSamePeopleButChild, relation.Of), relation.Person)
+	err = relation.CheckIfAllowed([]*Relationship{relationWithSamePeopleButChildReverted})
 	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
 }
 

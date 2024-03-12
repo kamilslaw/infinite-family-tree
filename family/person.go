@@ -17,7 +17,7 @@ const (
 type PersonId uuid.UUID
 
 type Person struct {
-	ID          PersonId
+	Id          PersonId
 	FirstNames  []string
 	SecondNames []string
 	BornOn      time.Time

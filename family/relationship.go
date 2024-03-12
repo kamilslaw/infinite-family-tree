@@ -15,8 +15,9 @@ const (
 )
 
 var (
-	ErrSelfRelationship               = errors.New("relationship has to be between two different people")
-	ErrUnknownRelationship            = errors.New("unknown relationship type")
+	ErrSelfRelationship    = errors.New("relationship has to be between two different people")
+	ErrUnknownRelationship = errors.New("unknown relationshi" +
+		"p type")
 	ErrRelationshipEndedBeforeStarted = errors.New("relationship could not be ended before started")
 	ErrRelationshipCouldNotBeEnded    = errors.New("such relationship kind could not be ended")
 
