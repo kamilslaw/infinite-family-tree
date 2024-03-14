@@ -5,12 +5,12 @@ package family
 // TODO: add implementation of interface to support the tree/graph visualisation/tracking (so the tree is generic and not family-tree dependent)
 
 type Family struct {
-	people    []Person
-	relations []Relationship
+	people    map[PersonId]Person
+	relations map[RelationshipId]Relationship
 }
 
 func (f *Family) AddPerson(p Person) error {
-	f.people = append(f.people, p)
+	f.people[p.Id] = p
 
 	return nil
 }

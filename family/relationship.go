@@ -3,6 +3,8 @@ package family
 import (
 	"errors"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type RelationshipKind string
@@ -25,7 +27,10 @@ var (
 	ErrChildRelationshipCannotCoexist = errors.New("the child relationship cannot coexist with other types of relationship")
 )
 
+type RelationshipId uuid.UUID
+
 type Relationship struct {
+	Id        RelationshipId
 	Person    PersonId
 	Is        RelationshipKind
 	Of        PersonId
@@ -46,8 +51,8 @@ func (r *Relationship) PeopleEqual(other *Relationship) bool {
 		(r.Person == other.Of && r.Of == other.Person)
 }
 
-func NewRelationship(person PersonId, is RelationshipKind, of PersonId,
-	startedOn time.Time, endedOn time.Time) (*Relationship, error) {
+func NewRelationship(id RelationshipId, person PersonId, is RelationshipKind,
+	of PersonId, startedOn time.Time, endedOn time.Time) (*Relationship, error) {
 
 	if person == of {
 		return &Relationship{}, ErrSelfRelationship
@@ -65,7 +70,7 @@ func NewRelationship(person PersonId, is RelationshipKind, of PersonId,
 		return &Relationship{}, ErrRelationshipCouldNotBeEnded
 	}
 
-	return &Relationship{Person: person, Is: is, Of: of, StartedOn: startedOn}, nil
+	return &Relationship{Id: id, Person: person, Is: is, Of: of, StartedOn: startedOn}, nil
 }
 
 func (r *Relationship) CheckIfAllowed(others []*Relationship) error {

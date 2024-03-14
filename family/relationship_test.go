@@ -1,10 +1,11 @@
 package family
 
 import (
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 var personId1 = uuid.New()
@@ -145,7 +146,7 @@ func getRelationship() *Relationship {
 func getRandomRelationship() *Relationship {
 	person := PersonId(uuid.New())
 	of := PersonId(uuid.New())
-	if r, e := NewRelationship(person, Friend, of, time.Time{}, time.Time{}); e != nil {
+	if r, e := NewRelationship(RelationshipId(uuid.New()), person, Friend, of, time.Time{}, time.Time{}); e != nil {
 		panic(e)
 	} else {
 		return r
