@@ -23,6 +23,7 @@ var (
 	ErrRelationshipEndedBeforeStarted = errors.New("relationship could not be ended before started")
 	ErrRelationshipCouldNotBeEnded    = errors.New("such relationship kind could not be ended")
 
+	ErrRelationshipIdExists           = errors.New("relationship with such Id already exists")
 	ErrRelationshipExists             = errors.New("relationship already exists")
 	ErrChildRelationshipCannotCoexist = errors.New("the child relationship cannot coexist with other types of relationship")
 )
@@ -75,6 +76,9 @@ func NewRelationship(id RelationshipId, person PersonId, is RelationshipKind,
 
 func (r *Relationship) CheckIfAllowed(others []*Relationship) error {
 	for _, other := range others {
+		if other.Id == r.Id {
+			return ErrRelationshipIdExists
+		}
 		if other.Equal(r) {
 			return ErrRelationshipExists
 		}
@@ -85,6 +89,6 @@ func (r *Relationship) CheckIfAllowed(others []*Relationship) error {
 		}
 	}
 
-	// todo: implement - check if exists in the family tree already
+	// todo: implement - check if exists in the family tree already (and other checks)
 	return nil
 }

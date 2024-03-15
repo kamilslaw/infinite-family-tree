@@ -120,6 +120,12 @@ func TestRelationship_CheckIfAllowed_RelationshipCannotBeDuplicated(t *testing.T
 	assert.ErrorIs(t, err, ErrRelationshipExists)
 }
 
+func TestRelationship_CheckIfAllowed_RelationshipIdCannotBeDuplicated(t *testing.T) {
+	relationship := getRelationship()
+	err := relationship.CheckIfAllowed([]*Relationship{withId(getRelationship(), relationship.Id)})
+	assert.ErrorIs(t, err, ErrRelationshipIdExists)
+}
+
 func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelationship(t *testing.T) {
 	relation := getRelationship()
 	relationWithSamePeopleButChild := withKind(getRelationship(), Child)
@@ -151,6 +157,11 @@ func getRandomRelationship() *Relationship {
 	} else {
 		return r
 	}
+}
+
+func withId(r *Relationship, id RelationshipId) *Relationship {
+	r.Id = id
+	return r
 }
 
 func withPerson(r *Relationship, person PersonId) *Relationship {
