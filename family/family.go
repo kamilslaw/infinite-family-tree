@@ -1,16 +1,19 @@
 package family
 
-import "errors"
+import (
+	"errors"
+	"github.com/kamilslaw/infinite-family-tree/tree"
+)
 import "github.com/kamilslaw/infinite-family-tree/utils"
 
-// TODO: more efficient way of storing the relationships - for now it should be fine (Unless your family has tens of thousands of members)
-
-// TODO: add implementation of interface to support the tree/graph visualisation/tracking (so the tree is generic and not family-tree dependent)
+// TODO: add implementation of interface to support the tree/tree visualisation/tracking (so the tree is generic and not family-tree dependent)
 
 type Family struct {
 	people    map[PersonId]*Person
 	relations map[RelationshipId]*Relationship
 }
+
+var _ tree.Visitor = (*Family)(nil) // Family implements tree.Visitor interface
 
 var (
 	ErrPersonIdExists       = errors.New("person with such Id already exists")
