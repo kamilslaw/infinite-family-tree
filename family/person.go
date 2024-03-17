@@ -1,17 +1,9 @@
 package family
 
 import (
-	"github.com/google/uuid"
 	"time"
-)
 
-type Gender string
-
-const (
-	Male          Gender = "male"
-	Female        Gender = "female"
-	OtherGender   Gender = "other"
-	UnknownGender Gender = "unknown"
+	"github.com/google/uuid"
 )
 
 type PersonId uuid.UUID
@@ -22,7 +14,6 @@ type Person struct {
 	SecondNames []string
 	BornOn      time.Time
 	DiedOn      time.Time
-	Gender      Gender
 	Attributes  map[string]string
 }
 

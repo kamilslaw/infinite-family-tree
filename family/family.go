@@ -2,23 +2,34 @@ package family
 
 import (
 	"errors"
-	"github.com/kamilslaw/infinite-family-tree/tree"
-)
-import "github.com/kamilslaw/infinite-family-tree/utils"
 
-// TODO: add implementation of interface to support the tree/tree visualisation/tracking (so the tree is generic and not family-tree dependent)
+	"github.com/kamilslaw/infinite-family-tree/utils"
+)
 
 type Family struct {
-	people    map[PersonId]*Person
-	relations map[RelationshipId]*Relationship
+	people                 map[PersonId]*Person
+	relationships          map[RelationshipId]*Relationship
+	relationshipsPerPerson map[PersonId][]*Relationship
 }
-
-var _ tree.Visitor = (*Family)(nil) // Family implements tree.Visitor interface
 
 var (
 	ErrPersonIdExists       = errors.New("person with such Id already exists")
 	ErrPersonIdDoesNotExist = errors.New("person with such Id does not exist")
 )
+
+func Recreate(people []*Person, relationships []*Relationship) *Family {
+	f := Family{}
+	for _, p := range people {
+		f.people[p.Id] = p
+		f.relationshipsPerPerson[p.Id] = make([]*Relationship, 0)
+	}
+	for _, r := range relationships {
+		f.relationships[r.Id] = r
+		f.relationshipsPerPerson[r.Of] = append(f.relationshipsPerPerson[r.Of], r)
+		f.relationshipsPerPerson[r.Person] = append(f.relationshipsPerPerson[r.Person], r)
+	}
+	return &f
+}
 
 func (f *Family) AddPerson(p *Person) error {
 	if _, ok := f.people[p.Id]; ok {
@@ -36,10 +47,10 @@ func (f *Family) AddRelationship(r *Relationship) error {
 	if _, ok := f.people[r.Of]; !ok {
 		return ErrPersonIdDoesNotExist
 	}
-	if err := r.CheckIfAllowed(utils.MapValues(f.relations)); err != nil {
+	if err := r.CheckIfAllowed(utils.MapValues(f.relationships)); err != nil {
 		return err
 	}
 
-	f.relations[r.Id] = r
+	f.relationships[r.Id] = r
 	return nil
 }

@@ -1,19 +1,22 @@
 package tree
 
-type Visitor[Node any] interface {
-	Root() *Tree[Node]
-	Successors(n Node) *Tree[Node]
-	Predecessors(n Node) *Tree[Node]
+import "errors"
+
+var ErrVertexIdDoesNotExist = errors.New("vertex with such Id does not exist")
+
+type Generator[VertexId comparable, EdgeId comparable] interface {
+	Root() (*Vertex[VertexId, EdgeId], error) // pick any vertex and return the whole tree
+	Successors(id VertexId) (*Vertex[VertexId, EdgeId], error)
+	Predecessors(id VertexId) (*Vertex[VertexId, EdgeId], error)
 }
 
-// Tree struct represents a directed graph, there can be relations in one direction only
-// (Successors() will return relations with a different direction than the Predecessors())
-type Tree[Node any] struct {
-	N      Node
-	Others []Relation[Node]
+type Vertex[VertexId comparable, EdgeId comparable] struct {
+	Id    VertexId
+	Edges []Edge[VertexId, EdgeId]
 }
 
-type Relation[Node any] struct {
-	N     *Tree[Node any]
-	Name string
+type Edge[VertexId comparable, EdgeId comparable] struct {
+	Id   EdgeId
+	From VertexId
+	To   *Vertex[VertexId, EdgeId]
 }
