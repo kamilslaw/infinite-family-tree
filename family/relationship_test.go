@@ -136,7 +136,7 @@ func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelation
 	err = relation.CheckIfAllowed([]*Relationship{relationWithSamePeopleButChild})
 	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
 
-	relationWithSamePeopleButChildReverted := withOf(withPerson(relationWithSamePeopleButChild, relation.Of), relation.Person)
+	relationWithSamePeopleButChildReverted := withOf(withPerson(relationWithSamePeopleButChild, relation.To), relation.From)
 	err = relation.CheckIfAllowed([]*Relationship{relationWithSamePeopleButChildReverted})
 	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
 }
@@ -165,17 +165,17 @@ func withId(r *Relationship, id RelationshipId) *Relationship {
 }
 
 func withPerson(r *Relationship, person PersonId) *Relationship {
-	r.Person = person
+	r.From = person
 	return r
 }
 
 func withOf(r *Relationship, of PersonId) *Relationship {
-	r.Of = of
+	r.To = of
 	return r
 }
 
 func withKind(r *Relationship, is RelationshipKind) *Relationship {
-	r.Is = is
+	r.Kind = is
 	return r
 }
 

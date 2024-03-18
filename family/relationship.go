@@ -32,24 +32,28 @@ type RelationshipId uuid.UUID
 
 type Relationship struct {
 	Id        RelationshipId
-	Person    PersonId
-	Is        RelationshipKind
-	Of        PersonId
+	From      PersonId
+	Kind      RelationshipKind
+	To        PersonId
 	StartedOn time.Time
 	EndedOn   time.Time
 }
 
+func (r *Relationship) OneSided() bool {
+	return r.Kind == Child
+}
+
 func (r *Relationship) Equal(other *Relationship) bool {
-	return r.Person == other.Person &&
-		r.Is == other.Is &&
-		r.Of == other.Of &&
+	return r.From == other.From &&
+		r.Kind == other.Kind &&
+		r.To == other.To &&
 		r.StartedOn.Equal(other.StartedOn) &&
 		r.EndedOn.Equal(other.EndedOn)
 }
 
 func (r *Relationship) PeopleEqual(other *Relationship) bool {
-	return (r.Person == other.Person && r.Of == other.Of) ||
-		(r.Person == other.Of && r.Of == other.Person)
+	return (r.From == other.From && r.To == other.To) ||
+		(r.From == other.To && r.To == other.From)
 }
 
 func NewRelationship(id RelationshipId, person PersonId, is RelationshipKind,
@@ -71,7 +75,7 @@ func NewRelationship(id RelationshipId, person PersonId, is RelationshipKind,
 		return &Relationship{}, ErrRelationshipCouldNotBeEnded
 	}
 
-	return &Relationship{Id: id, Person: person, Is: is, Of: of, StartedOn: startedOn}, nil
+	return &Relationship{Id: id, From: person, Kind: is, To: of, StartedOn: startedOn}, nil
 }
 
 func (r *Relationship) CheckIfAllowed(others []*Relationship) error {
@@ -83,7 +87,7 @@ func (r *Relationship) CheckIfAllowed(others []*Relationship) error {
 			return ErrRelationshipExists
 		}
 
-		anyChildRelationship := r.Is == Child || other.Is == Child
+		anyChildRelationship := r.Kind == Child || other.Kind == Child
 		if anyChildRelationship && r.PeopleEqual(other) {
 			return ErrChildRelationshipCannotCoexist
 		}

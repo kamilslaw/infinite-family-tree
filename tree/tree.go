@@ -4,8 +4,9 @@ import "errors"
 
 var ErrVertexIdDoesNotExist = errors.New("vertex with such Id does not exist")
 
+// a directed graph, it is called a tree but it could contain cycles
 type Generator[VertexId comparable, EdgeId comparable] interface {
-	Root() (*Vertex[VertexId, EdgeId], error) // pick any vertex and return the whole tree
+	Tree() (*Vertex[VertexId, EdgeId], error) // pick any vertex and return the whole tree
 	Successors(id VertexId) (*Vertex[VertexId, EdgeId], error)
 	Predecessors(id VertexId) (*Vertex[VertexId, EdgeId], error)
 }
