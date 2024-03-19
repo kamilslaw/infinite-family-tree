@@ -3,6 +3,7 @@ package tree
 import "errors"
 
 var ErrVertexIdDoesNotExist = errors.New("vertex with such Id does not exist")
+var ErrNoVertex = errors.New("tree does not contain any vertex")
 
 // a directed graph, it is called a tree but it could contain cycles
 type Generator[VertexId comparable, EdgeId comparable] interface {
