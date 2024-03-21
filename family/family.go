@@ -27,8 +27,8 @@ func Recreate(people []*Person, relationships []*Relationship) *Family {
 
 	for _, p := range people {
 		f.people[p.Id] = p
-		f.relationshipsFromPerson[p.Id] = make([]*Relationship, 0)
-		f.relationshipsToPerson[p.Id] = make([]*Relationship, 0)
+		f.relationshipsFromPerson[p.Id] = []*Relationship{}
+		f.relationshipsToPerson[p.Id] = []*Relationship{}
 	}
 	for _, r := range relationships {
 		f.relationships[r.Id] = r

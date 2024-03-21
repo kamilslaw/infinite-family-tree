@@ -48,7 +48,7 @@ func TestFamilyTree_Successors(t *testing.T) {
 	assert.NotNil(t, tree)
 
 	assert.Equal(t, PA, tree.Id)
-	assert.Equal(t, 1, len(tree.Edges))
+	assert.ElementsMatch(t, []RelationshipId{RA}, edgesToIds(tree.Edges))
 }
 
 func getPerson(id PersonId) *Person {
@@ -59,4 +59,12 @@ func getRelationship(id RelationshipId, from PersonId,
 	kind RelationshipKind, to PersonId) *Relationship {
 	r, _ := NewRelationship(id, from, kind, to, time.Time{}, time.Time{})
 	return r
+}
+
+func edgesToIds(edges []edge) []RelationshipId {
+	ids := []RelationshipId{}
+	for _, e := range edges {
+		ids = append(ids, e.Id)
+	}
+	return ids
 }
