@@ -31,7 +31,12 @@ func (f *Family) Successors(id PersonId) (*vertex, error) {
 
 	for _, p := range f.people {
 		for _, r := range directSuccessors(p.Id, f) {
-			vertexes[r.From].Edges = append(vertexes[r.From].Edges, *edges[r.Id])
+			v := vertexes[r.From]
+			v.Edges = append(v.Edges, *edges[r.Id])
+			if !r.OneSided() {
+				v = vertexes[r.To]
+				v.Edges = append(v.Edges, *edges[r.Id])
+			}
 		}
 	}
 
@@ -48,7 +53,12 @@ func (f *Family) Predecessors(id PersonId) (*vertex, error) {
 
 	for _, p := range f.people {
 		for _, r := range directPredecessors(p.Id, f) {
-			vertexes[r.From].Edges = append(vertexes[r.From].Edges, *edges[r.Id])
+			v := vertexes[r.To]
+			v.Edges = append(v.Edges, *edges[r.Id])
+			if !r.OneSided() {
+				v = vertexes[r.From]
+				v.Edges = append(v.Edges, *edges[r.Id])
+			}
 		}
 	}
 

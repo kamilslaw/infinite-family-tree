@@ -63,5 +63,7 @@ func (f *Family) AddRelationship(r *Relationship) error {
 	}
 
 	f.relationships[r.Id] = r
+	f.relationshipsFromPerson[r.From] = append(f.relationshipsFromPerson[r.From], r)
+	f.relationshipsToPerson[r.To] = append(f.relationshipsToPerson[r.To], r)
 	return nil
 }
