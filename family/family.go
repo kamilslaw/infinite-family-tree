@@ -20,6 +20,11 @@ var (
 
 func Recreate(people []*Person, relationships []*Relationship) *Family {
 	f := Family{}
+	f.people = make(map[PersonId]*Person)
+	f.relationships = make(map[RelationshipId]*Relationship)
+	f.relationshipsFromPerson = make(map[PersonId][]*Relationship)
+	f.relationshipsToPerson = make(map[PersonId][]*Relationship)
+
 	for _, p := range people {
 		f.people[p.Id] = p
 		f.relationshipsFromPerson[p.Id] = make([]*Relationship, 0)

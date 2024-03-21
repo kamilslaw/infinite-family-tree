@@ -56,14 +56,14 @@ func (r *Relationship) PeopleEqual(other *Relationship) bool {
 		(r.From == other.To && r.To == other.From)
 }
 
-func NewRelationship(id RelationshipId, person PersonId, is RelationshipKind,
-	of PersonId, startedOn time.Time, endedOn time.Time) (*Relationship, error) {
+func NewRelationship(id RelationshipId, from PersonId, kind RelationshipKind,
+	to PersonId, startedOn time.Time, endedOn time.Time) (*Relationship, error) {
 
-	if person == of {
+	if from == to {
 		return &Relationship{}, ErrSelfRelationship
 	}
 
-	if is != Partner && is != Spouse && is != Child && is != Friend {
+	if kind != Partner && kind != Spouse && kind != Child && kind != Friend {
 		return &Relationship{}, ErrUnknownRelationship
 	}
 
@@ -71,11 +71,11 @@ func NewRelationship(id RelationshipId, person PersonId, is RelationshipKind,
 		return &Relationship{}, ErrRelationshipEndedBeforeStarted
 	}
 
-	if !endedOn.IsZero() && is != Partner && is != Spouse && is != Friend {
+	if !endedOn.IsZero() && kind != Partner && kind != Spouse && kind != Friend {
 		return &Relationship{}, ErrRelationshipCouldNotBeEnded
 	}
 
-	return &Relationship{Id: id, From: person, Kind: is, To: of, StartedOn: startedOn}, nil
+	return &Relationship{Id: id, From: from, Kind: kind, To: to, StartedOn: startedOn}, nil
 }
 
 func (r *Relationship) CheckIfAllowed(others []*Relationship) error {

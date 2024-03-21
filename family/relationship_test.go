@@ -34,26 +34,26 @@ func TestRelationship_Equal(t *testing.T) {
 	}{
 		{
 			name:   "different relationship",
-			r:      getRelationship(),
+			r:      getRelationshipInstance(),
 			other:  getRandomRelationship(),
 			result: false,
 		},
 		{
 			name:   "different kind",
-			r:      getRelationship(),
-			other:  withKind(getRelationship(), Partner),
+			r:      getRelationshipInstance(),
+			other:  withKind(getRelationshipInstance(), Partner),
 			result: false,
 		},
 		{
 			name:   "different start time",
-			r:      getRelationship(),
-			other:  withStartedOn(getRelationship(), time.Now()),
+			r:      getRelationshipInstance(),
+			other:  withStartedOn(getRelationshipInstance(), time.Now()),
 			result: false,
 		},
 		{
 			name:   "same",
-			r:      getRelationship(),
-			other:  getRelationship(),
+			r:      getRelationshipInstance(),
+			other:  getRelationshipInstance(),
 			result: true,
 		},
 	}
@@ -100,8 +100,8 @@ func TestRelationship_PeopleEqual(t *testing.T) {
 		},
 		{
 			name:   "two common persons, but switched",
-			r:      withOf(withPerson(getRelationship(), personId1), personId2),
-			other:  withOf(withPerson(getRelationship(), personId2), personId1),
+			r:      withOf(withPerson(getRelationshipInstance(), personId1), personId2),
+			other:  withOf(withPerson(getRelationshipInstance(), personId2), personId1),
 			result: true,
 		},
 	}
@@ -113,22 +113,22 @@ func TestRelationship_PeopleEqual(t *testing.T) {
 }
 
 func TestRelationship_CheckIfAllowed_RelationshipCannotBeDuplicated(t *testing.T) {
-	err := getRelationship().CheckIfAllowed([]*Relationship{withKind(getRelationship(), Partner)})
+	err := getRelationshipInstance().CheckIfAllowed([]*Relationship{withKind(getRelationshipInstance(), Partner)})
 	assert.Nil(t, err)
 
-	err = getRelationship().CheckIfAllowed([]*Relationship{getRelationship()})
+	err = getRelationshipInstance().CheckIfAllowed([]*Relationship{getRelationshipInstance()})
 	assert.ErrorIs(t, err, ErrRelationshipExists)
 }
 
 func TestRelationship_CheckIfAllowed_RelationshipIdCannotBeDuplicated(t *testing.T) {
-	relationship := getRelationship()
-	err := relationship.CheckIfAllowed([]*Relationship{withId(getRelationship(), relationship.Id)})
+	relationship := getRelationshipInstance()
+	err := relationship.CheckIfAllowed([]*Relationship{withId(getRelationshipInstance(), relationship.Id)})
 	assert.ErrorIs(t, err, ErrRelationshipIdExists)
 }
 
 func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelationship(t *testing.T) {
-	relation := getRelationship()
-	relationWithSamePeopleButChild := withKind(getRelationship(), Child)
+	relation := getRelationshipInstance()
+	relationWithSamePeopleButChild := withKind(getRelationshipInstance(), Child)
 
 	err := relationWithSamePeopleButChild.CheckIfAllowed([]*Relationship{relation})
 	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
@@ -141,7 +141,7 @@ func TestRelationship_CheckIfAllowed_ChildRelationCannotCoexistWithOtherRelation
 	assert.ErrorIs(t, err, ErrChildRelationshipCannotCoexist)
 }
 
-func getRelationship() *Relationship {
+func getRelationshipInstance() *Relationship {
 	personId1Copy := make([]byte, len(personId1))
 	copy(personId1Copy, personId1[:])
 	personId2Copy := make([]byte, len(personId2))
