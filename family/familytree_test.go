@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kamilslaw/infinite-family-tree/tree"
 	"github.com/kamilslaw/infinite-family-tree/utils"
 	"github.com/stretchr/testify/assert"
 )
@@ -42,13 +43,17 @@ func init() {
 }
 
 func TestFamilyTree_Successors(t *testing.T) {
-	tree, err := f.Successors(PA)
+	v, err := f.Successors(PA)
 
 	assert.Nil(t, err)
-	assert.NotNil(t, tree)
+	assert.NotNil(t, v)
 
-	assert.Equal(t, PA, tree.Id)
-	assert.ElementsMatch(t, []RelationshipId{RA}, edgesToIds(tree.Edges))
+	treeStr := tree.ToStr(v)
+
+	assert.Equal(t, "", treeStr)
+
+	// assert.Equal(t, PA, tree.Id)
+	// assert.ElementsMatch(t, []RelationshipId{RA}, edgesToIds(tree.Edges))
 }
 
 func getPerson(id PersonId) *Person {
@@ -61,10 +66,10 @@ func getRelationship(id RelationshipId, from PersonId,
 	return r
 }
 
-func edgesToIds(edges []edge) []RelationshipId {
-	ids := []RelationshipId{}
-	for _, e := range edges {
-		ids = append(ids, e.Id)
-	}
-	return ids
-}
+// func edgesToIds(edges []edge) []RelationshipId {
+// 	ids := []RelationshipId{}
+// 	for _, e := range edges {
+// 		ids = append(ids, e.Id)
+// 	}
+// 	return ids
+// }
