@@ -1,6 +1,7 @@
 package family
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -50,7 +51,10 @@ func TestFamilyTree_Successors(t *testing.T) {
 
 	treeStr := tree.ToStr(v)
 
-	assert.Equal(t, "", treeStr)
+	expected := fmt.Sprintf(`%v (1)
+  %v (2)
+`, PA, PB)
+	assert.Equal(t, expected, treeStr)
 
 	// assert.Equal(t, PA, tree.Id)
 	// assert.ElementsMatch(t, []RelationshipId{RA}, edgesToIds(tree.Edges))

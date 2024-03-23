@@ -14,7 +14,7 @@ func ToStr[VertexId comparable, EdgeId comparable](t *Vertex[VertexId, EdgeId]) 
 
 func visit[VertexId comparable, EdgeId comparable](
 	t *Vertex[VertexId, EdgeId], visited map[VertexId]bool, sb *strings.Builder, depth int) {
-	sb.WriteString(strings.Repeat("  ", depth))
+	sb.WriteString(strings.Repeat(" ", depth))
 	fmt.Fprintf(sb, "%v (%d)", t.Id, len(t.Edges))
 	fmt.Fprintln(sb)
 	if !visited[t.Id] {
