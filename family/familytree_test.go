@@ -23,7 +23,6 @@ var RC = RelationshipId([16]byte{2})
 var RD = RelationshipId([16]byte{3})
 var RE = RelationshipId([16]byte{4})
 var RF = RelationshipId([16]byte{5})
-var RG = RelationshipId([16]byte{6})
 
 var f *Family = Recreate(nil, nil)
 
@@ -40,7 +39,6 @@ func init() {
 	utils.PanicIfError(f.AddRelationship(getRelationship(RD, PC, Child, PD)))
 	utils.PanicIfError(f.AddRelationship(getRelationship(RE, PC, Child, PE)))
 	utils.PanicIfError(f.AddRelationship(getRelationship(RF, PD, Partner, PF)))
-	utils.PanicIfError(f.AddRelationship(getRelationship(RG, PF, Friend, PE)))
 }
 
 func TestFamilyTree_Successors(t *testing.T) {
@@ -52,8 +50,13 @@ func TestFamilyTree_Successors(t *testing.T) {
 	treeStr := tree.ToStr(v)
 
 	expected := fmt.Sprintf(`%v (1)
+ %v (2)
   %v (2)
-`, PA, PB)
+   %v (1)
+    %v (0)
+   %v (0)
+  %v (1)
+`, PA, PB, PC, PD, PF, PE, PD)
 	assert.Equal(t, expected, treeStr)
 
 	// assert.Equal(t, PA, tree.Id)
