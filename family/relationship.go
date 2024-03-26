@@ -9,17 +9,18 @@ import (
 type RelationshipKind string
 type OneSidedRelationshipKind string
 
-const (
-	Partner RelationshipKind = "partner"
-	Spouse  RelationshipKind = "spouse"
-	Friend  RelationshipKind = "friend"
-)
+// const (
+// 	Partner RelationshipKind = "partner"
+// 	Spouse  RelationshipKind = "spouse"
+// 	Friend  RelationshipKind = "friend"
+// )
 
-const (
-	Child OneSidedRelationshipKind = "child"
-)
+// const (
+// 	Child OneSidedRelationshipKind = "child"
+// )
 
 // var (
+
 // 	ErrSelfRelationship    = errors.New("relationship has to be between two different people")
 // 	ErrUnknownRelationship = errors.New("unknown relationshi" +
 // 		"p type")
